@@ -7,6 +7,7 @@ const ThreadSchema = new Schema({
     content: { type: String, required: true },
     user: { type: ObjectId, ref: 'user', required: true },
     upvotes: [{ type: ObjectId, ref: 'user', required: true}],
+    downvotes: [{ type: ObjectId, ref: 'user', required: true}],
     comments: [CommentSchema]
 });
 
@@ -14,6 +15,8 @@ const CommentSchema = new Schema({
     content: { type: String, required: true },
     user: { type: ObjectId, ref: 'user', required: true},
     threadId: { type: ObjectId, ref: 'thread', required: true},
+    upvotes: [{ type: ObjectId, ref: 'user', required: true}],
+    downvotes: [{ type: ObjectId, ref: 'user', required: true}],
     comments: [this]
 });
 
