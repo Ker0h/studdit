@@ -4,8 +4,8 @@
   "description": "NodeJS backend for the Studdit assignment",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=testCloud mocha",
-    "start": "NODE_ENV=production node app.js"
+    "test": "set NODE_ENV=testCloud && mocha",
+    "start": "set NODE_ENV=production && node app.js"
   },
   "engines": {
     "node": "10.x"
@@ -21,8 +21,11 @@
   },
   "homepage": "https://github.com/Ker0h/studdit#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
     "mocha": "^5.2.0",
+    "moment": "^2.22.2",
     "mongoose": "^5.3.13",
     "neo4j-driver": "^1.5.0",
     "nodemon": "^1.18.6",
