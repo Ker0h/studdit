@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-const User = require('./user')
-
 const ThreadSchema = new Schema({
     title: String,
     content: String,
@@ -19,6 +17,6 @@ const CommentSchema = new Schema({
     comments: [this]
 })
 
-var Thread = mongoose.model('Thread', ThreadSchema)
+var Thread = mongoose.model('thread', ThreadSchema)
 
-module.exports = { thread: Thread, commentsSchema: CommentSchema }
+module.exports = Thread
