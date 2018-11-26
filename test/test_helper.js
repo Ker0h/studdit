@@ -20,8 +20,7 @@ before((done) => {
 })
 
 beforeEach((done) => {
-    // mongoose.connection.collections.users.drop((err, doc) => {
-    //     done(err)
-    // })
-    done()
+    mongoose.connection.collections.users.drop((err, doc) => {
+        done(err)
+    })
 })
