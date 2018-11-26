@@ -8,7 +8,7 @@ const CommentSchema = new Schema({
     threadId: { type: ObjectId, ref: 'thread', required: true},
     upvotes: [{ type: ObjectId, ref: 'user', required: true}],
     downvotes: [{ type: ObjectId, ref: 'user', required: true}],
-    comments: [this]
+    comments: [CommentSchema]
 });
 
 module.exports = CommentSchema

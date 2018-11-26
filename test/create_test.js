@@ -8,6 +8,8 @@ describe('Creating users', () => {
             .then(() => {
                 assert(!user.isNew)
                 done()
+            }).catch((err) => {
+                done(err)
             })
     })
 })

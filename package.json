@@ -2,9 +2,13 @@
   "name": "studdit",
   "version": "1.0.0",
   "description": "NodeJS backend for the Studdit assignment",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "mocha"
+    "test": "NODE_ENV=testCloud mocha",
+    "start": "NODE_ENV=production node app.js"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "repository": {
     "type": "git",
@@ -17,8 +21,10 @@
   },
   "homepage": "https://github.com/Ker0h/studdit#readme",
   "dependencies": {
+    "express": "^4.16.4",
     "mocha": "^5.2.0",
     "mongoose": "^5.3.13",
+    "neo4j-driver": "^1.5.0",
     "nodemon": "^1.18.6",
     "seraph": "^0.15.3"
   }
