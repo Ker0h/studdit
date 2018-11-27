@@ -4,7 +4,13 @@ const mongoose = require('mongoose')
 const User = require('./../models/user')
 const Thread = require('./../models/thread')
 const Errors = require('./../errorHandling/errorcodes')
-const user = require('./../routes/user.js')
+
+/*
+* Route files
+*/
+const user = require('./user')
+const thread = require('./thread')
+const comment = require('./comment')
 
 /*
 * User Endpoints
@@ -33,33 +39,7 @@ router.route('/login').post( function(req, res) {
 })
 
 router.use('/user', user)
+router.use('/threads', thread)
+router.use('/threads/:threadId/comments', comment)
 
-module.exports = route
-/*
-* Friendship Endpoints
-*/
-
-/*
-* Thread Endpoints
-*/
-
-router.route('/threads').post(function(req, res) {
-    let title = req.body.title || ''
-    let content = req.body.content || ''
-    let userId = '5bfd0bcc168e881e36f7dfad'
-
-    const thread = new Thread({
-        title: title,
-        content: content,
-        user: userId
-    })
-
-    thread.save()
-})
-
-/*
-* Comment Endpoints
-*/
-
-module.exports = router;
-
+module.exports = router

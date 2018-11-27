@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "set NODE_ENV=testCloud& mocha",
-    "start": "set NODE_ENV=production& node src/app.js",
+    "start": "set NODE_ENV=production& nodemon src/app.js",
     "test-linux": "NODE_ENV=testCloud mocha",
-    "start-linux": "NODE_ENV=production node src/app.js"
+    "start-linux": "NODE_ENV=production nodemon src/app.js"
   },
   "engines": {
     "node": "10.x"
