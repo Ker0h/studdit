@@ -20,7 +20,7 @@ function encodeToken(username) {
 function decodeToken(token, cb) {
 
     try {
-        const payload = jwt.decode(token, config.secretkey).
+        const payload = jwt.decode(token, config.secretkey)
         const now = moment().unix()
 
         // Check if the token has expired

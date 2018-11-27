@@ -45,7 +45,7 @@ router.put('/', (req, res) => {
                 User.updateOne({username : user}, {$set: {password : newpassword}},(err) => {
                    if (!err){
                        res.status(200).json("password updated")
-                    }else{
+                    } else {
                         console.log(err)
                         res.status(400).json(err)
                     }
