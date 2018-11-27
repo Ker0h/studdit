@@ -7,17 +7,28 @@ const api = require('./routes/api.js')
 const errors = require('./errorHandling/errorcodes')
 const config = require('../config')
 const port = process.env.PORT || 3000
+const env = process.env.NODE_ENV;
 
 //Mongoose
 mongoose.Promise = global.Promise
 
-if (process.env.NODE_ENV == "testCloud" || process.env.NODE_ENV == "production") {
+if (env == 'testCloud' || env == "production") {
     mongoose.connect('mongodb+srv://ker0h:Qwerty_123@studdit-mongo-cgart.mongodb.net/test?retryWrites=true',
         { useNewUrlParser: true })
-        console.log('connected')
 } else {
-    mongoose.connect('mongodb://localhost/users_test')
+    //mongoose.connect('mongodb://localhost/users_test')
+    mongoose.connect('mongodb+srv://ker0h:Qwerty_123@studdit-mongo-cgart.mongodb.net/test?retryWrites=true',
+        { useNewUrlParser: true })
+    console.log('connected localy')
 }
+mongoose.connection
+.once('open', () => {
+    console.log("connected, connection is open")
+})
+.on('error', (error) => {
+    console.warn('Warning:', error)
+})
+
 
 //Routing
 app.use(bodyparser.urlencoded({extended:false}))
