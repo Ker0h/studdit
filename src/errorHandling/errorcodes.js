@@ -1,4 +1,4 @@
-const Error = require('./Error');
+const Error = require('./error');
 
 /**
  * Holder class for the used API errors.
