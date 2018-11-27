@@ -34,16 +34,16 @@ mongoose.connection
 app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 
-app.use(expressJWT({
-    secret: config.secretkey
-}).unless({
-    path: ['/api/login', '/api/register']
-}), (function(err, req, res, next){
-    if(err.name === 'UnauthorizedError'){
-        const err = errors.unauthorized()
-        res.status(err.code).json(err)
-    }
-}));
+// app.use(expressJWT({
+//     secret: config.secretkey
+// }).unless({
+//     //path: ['/api/login', '/api/register']
+// }), (function(err, req, res, next){
+//     if(err.name === 'UnauthorizedError'){
+//         const err = errors.unauthorized()
+//         res.status(err.code).json(err)
+//     }
+// }));
 
 app.use('/api', api)
 
