@@ -28,7 +28,7 @@ router.route('/login').post( function(req, res) {
             const err = Errors.notFound()
             res.status(err.code).json(err)
         } else {
-            if(!userdoc.password == password || error){
+            if(userdoc.password != password || error){
                 const err = Errors.badRequest()
                 res.status(err.code).json(err)
             } else{
