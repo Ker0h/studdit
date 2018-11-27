@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 
 before((done) => {
-    //Mongoose
     mongoose.Promise = global.Promise
-    console.log(process.eventNames.NODE_ENV)
+
     if (process.env.NODE_ENV == "testCloud" || process.env.NODE_ENV == "production") {
         mongoose.connect('mongodb+srv://ker0h:Qwerty_123@studdit-mongo-cgart.mongodb.net/test?retryWrites=true',
             { useNewUrlParser: true })
@@ -19,8 +18,13 @@ before((done) => {
         })
 })
 
-beforeEach((done) => {
-    mongoose.connection.collections.users.drop((err, doc) => {
-        done(err)
-    })
-})
+// beforeEach((done) => {
+//     if (mongoose.connection.collections.any) {
+//         mongoose.connection.collections.threads.drop((err, doc) => {
+//             if (err) console.warn('beforeEach Thread Error:', err)
+//             mongoose.connection.collections.users.drop((err, doc) => {
+//                 done(err)
+//             })
+//         })
+//     }
+// })
