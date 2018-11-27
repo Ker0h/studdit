@@ -14,6 +14,7 @@ mongoose.Promise = global.Promise
 if (process.env.NODE_ENV == "testCloud" || process.env.NODE_ENV == "production") {
     mongoose.connect('mongodb+srv://ker0h:Qwerty_123@studdit-mongo-cgart.mongodb.net/test?retryWrites=true',
         { useNewUrlParser: true })
+        console.log('connected')
 } else {
     mongoose.connect('mongodb://localhost/users_test')
 }
