@@ -91,6 +91,13 @@ class Errors {
     static userExists() {
         return new Error("User Exists", 420);
     }
+
+    /**
+     * The request was well-formed but was unable to be followed due to semantic errors
+     */
+    static UnprocessableEntity(){
+        return new Error("Unprocessable Entity", 422)
+    }
 }
 
 module.exports = Errors;

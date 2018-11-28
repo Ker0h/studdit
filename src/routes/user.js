@@ -53,13 +53,12 @@ router.put('/', (req, res) => {
     let newpassword = req.body.newpassword || ''
 
     User.findOne({ username: user }, function (error, userdoc) {
-        console.log(userdoc)
-        if (!userdoc) {
-            const err = Errors.notFound()
+        if (!userdoc || error) {
+            const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
         } else {
             if (userdoc.password != password || error) {
-                const err = Errors.unauthorized();
+                const err = Errors.unauthorized()
                 res.status(err.code).json(err)
             } else {
                 User.updateOne({ username: user }, { $set: { password: newpassword } }, (err) => {
@@ -112,10 +111,6 @@ router.delete('/', (req, res) => {
             }
         }
     })
-})
-
-router.get('/', (req, res) => {
-    res.status(200).json("werkt")
 })
 
 module.exports = router
