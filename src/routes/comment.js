@@ -8,22 +8,27 @@ const Errors = require('./../errorHandling/errorcodes')
 * CREATE COMMENT
 */
 router.post('/', (req, res) => {
-    Thread.findById(req.params.threadId, (err, thread) => {
-        if (err) res.status(500).json(err)
+    let threadId = req.params.threadId || ''
 
-        const comment = {
-            content: req.body.content,
-            user: req.body.user,
-            thread: req.params.threadId
+    Thread.findById(threadId, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
+            const comment = {
+                content: req.body.content,
+                user: req.body.user,
+                thread: req.params.threadId
+            }
+
+            thread.comments.push(comment)
+
+            thread.save()
+                .then((thread) => {
+                    res.status(200).json(thread)
+                })
+                .catch((err) => res.status(400).json(err))
         }
-
-        thread.comments.push(comment)
-
-        thread.save()
-            .then((thread) => {
-                res.status(200).json(thread)
-            })
-            .catch((err) => res.status(400).json(err))
     })
 })
 
@@ -31,9 +36,15 @@ router.post('/', (req, res) => {
 * GET ALL COMMENTS
 */
 router.get('/', (req, res) => {
-    Thread.findById(req.params.threadId, { __v: 0 }, (err, thread) => {
-        if (err) res.status(500).json(err)
-        res.status(200).json(thread.comments)
+    let threadId = req.params.threadId || ''
+
+    Thread.findById(threadId, { __v: 0 }, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
+            res.status(200).json(thread.comments)
+        }
     })
 })
 
@@ -41,9 +52,15 @@ router.get('/', (req, res) => {
 * GET COMMENT BY ID
 */
 router.get('/:id', (req, res) => {
-    Thread.findById(req.params.threadId, (err, thread) => {
-        if (err) res.status(500).json(err)
-        res.status(200).json(thread.comments.id(req.params.id))
+    let threadId = req.params.threadId || ''
+
+    Thread.findById(threadId, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
+            res.status(200).json(thread.comments.id(req.params.id))
+        }
     })
 })
 
@@ -51,24 +68,29 @@ router.get('/:id', (req, res) => {
 * ADD COMMENT TO ANOTHER COMMENT (UPDATE COMMENT)
 */
 router.post('/:id', (req, res) => {
-    Thread.findById(req.params.threadId, { __v: 0 }, (err, thread) => {
-        if (err) res.status(500).json(err)
+    let threadId = req.params.threadId || ''
 
-        const comment = thread.comments.id(req.params.id)
+    Thread.findById(threadId, { __v: 0 }, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
+            const comment = thread.comments.id(req.params.id)
 
-        const subComment = {
-            content: req.body.content,
-            user: req.body.user,
-            thread: req.params.threadId
+            const subComment = {
+                content: req.body.content,
+                user: req.body.user,
+                thread: req.params.threadId
+            }
+
+            comment.comments.push(subComment)
+
+            thread.save()
+                .then((thread) => {
+                    res.status(200).json(thread)
+                })
+                .catch((err) => res.status(400).json(err))
         }
-
-        comment.comments.push(subComment)
-
-        thread.save()
-            .then((thread) => {
-                res.status(200).json(thread)
-            })
-            .catch((err) => res.status(400).json(err))
     })
 })
 
@@ -76,18 +98,24 @@ router.post('/:id', (req, res) => {
 * DELETE COMMENT
 */
 router.delete('/:id', (req, res) => {
-    Thread.findById(req.params.threadId, { __v: 0 }, (err, thread) => {
-        if (err) res.status(500).json(err)
+    let threadId = req.params.threadId || ''
 
-        const comment = thread.comments.id(req.params.id)
+    Thread.findById(threadId, { __v: 0 }, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
 
-        thread.comments.remove(comment)
+            const comment = thread.comments.id(req.params.id)
 
-        thread.save()
-            .then((thread) => {
-                res.status(200).json(thread)
-            })
-            .catch((err) => res.status(400).json(err))
+            thread.comments.remove(comment)
+
+            thread.save()
+                .then((thread) => {
+                    res.status(200).json(thread)
+                })
+                .catch((err) => res.status(400).json(err))
+        }
     })
 })
 
@@ -95,27 +123,31 @@ router.delete('/:id', (req, res) => {
 * UPVOTE COMMENT
 */
 router.put('/:id/upvote', (req, res) => {
-    Thread.findById(req.params.threadId, (err, thread) => {
-        if (err) res.status(500).json(err)
+    let threadId = req.params.threadId || ''
 
-        const comment = thread.comments.id(req.params.id)
+    Thread.findById(threadId, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
 
-        let user = req.body.user
+            const comment = thread.comments.id(req.params.id)
 
-        if(comment.downvotes.indexOf(user) >= 0) {
-            comment.downvotes.remove(user)
-            comment.totalDownvotes--
+            let user = req.body.user
+
+            if (comment.downvotes.indexOf(user) >= 0) {
+                comment.downvotes.remove(user)
+                comment.totalDownvotes--
+            }
+
+            if (comment.upvotes.indexOf(user) >= 0) {
+                console.log('User already upvoted')
+            } else {
+                comment.upvotes.push(user)
+                comment.totalUpvotes++
+            }
+            thread.save().then(() => res.json(thread))
         }
-
-        if(comment.upvotes.indexOf(user) >= 0) {
-            console.log('User already upvoted')
-        }else{
-            comment.upvotes.push(user)
-            comment.totalUpvotes++
-        }
-
-        thread.save()
-            .then(() => res.json(thread))
     })
 })
 
@@ -123,27 +155,31 @@ router.put('/:id/upvote', (req, res) => {
 * DOWNVOTE THREAD
 */
 router.put('/:id/downvote', (req, res) => {
-    Thread.findById(req.params.threadId, (err, thread) => {
-        if (err) res.status(500).json(err)
+    let threadId = req.params.threadId || ''
 
-        const comment = thread.comments.id(req.params.id)
+    Thread.findById(threadId, (err, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
 
-        let user = req.body.user
+            const comment = thread.comments.id(req.params.id)
 
-        if(comment.upvotes.indexOf(user) >= 0) {
-            comment.upvotes.remove(user)
-            comment.totalUpvotes--
+            let user = req.body.user
+
+            if (comment.upvotes.indexOf(user) >= 0) {
+                comment.upvotes.remove(user)
+                comment.totalUpvotes--
+            }
+
+            if (comment.downvotes.indexOf(user) >= 0) {
+                console.log('User already downvoted')
+            } else {
+                comment.downvotes.push(user)
+                comment.totalDownvotes++
+            }
+            thread.save().then(() => res.json(thread))
         }
-
-        if(comment.downvotes.indexOf(user) >= 0) {
-            console.log('User already downvoted')
-        }else{
-            comment.downvotes.push(user)
-            comment.totalDownvotes++
-        }
-
-        thread.save()
-            .then(() => res.json(thread))
     })
 })
 

@@ -81,7 +81,7 @@ router.delete('/', (req, res) => {
     User.findOne({ username: user }, function (error, userdoc) {
         console.log(userdoc)
         if (!userdoc) {
-            const err = Errors.notFound()
+            const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
         } else {
             if (userdoc.password != password || error) {

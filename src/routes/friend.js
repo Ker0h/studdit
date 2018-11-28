@@ -8,8 +8,6 @@ var driver = neo4j.driver("bolt://hobby-kpdkodfghkjagbkeeblebfbl.dbs.graphenedb.
     neo4j.auth.basic("ker0h", "b.py8nv1koOg8B.QkeGFQhL2h2oDjhP"));
 
 
-
-
 router.post('/', (req, res) => {
     let user1 = req.body.user1 || ''
     let user2 = req.body.user2 || ''
@@ -17,12 +15,12 @@ router.post('/', (req, res) => {
     if (user1 && user2) {
         User.findOne({ username: user1 }, function (error, userdoc) {
             if (!userdoc) {
-                const err = Errors.notFound()
+                const err = Errors.UnprocessableEntity()
                 res.status(err.code).json(err)
             } else {
                 User.findOne({ username: user2 }, function (error, userdoc) {
                     if (!userdoc) {
-                        const err = Errors.notFound()
+                        const err = Errors.UnprocessableEntity()
                         res.status(err.code).json(err)
                     } else {
                         var session = driver.session();
@@ -55,12 +53,12 @@ router.delete('/', (req, res) => {
     if (user1 && user2) {
         User.findOne({ username: user1 }, function (error, userdoc) {
             if (!userdoc) {
-                const err = Errors.notFound()
+                const err = Errors.UnprocessableEntity()
                 res.status(err.code).json(err)
             } else {
                 User.findOne({ username: user2 }, function (error, userdoc) {
                     if (!userdoc) {
-                        const err = Errors.notFound()
+                        const err = Errors.UnprocessableEntity()
                         res.status(err.code).json(err)
                     } else {
                         var session = driver.session();
