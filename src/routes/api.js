@@ -11,6 +11,7 @@ const Errors = require('./../errorHandling/errorcodes')
 const user = require('./user')
 const thread = require('./thread')
 const comment = require('./comment')
+const friend = require('./friend')
 
 /*
 * User Endpoints
@@ -41,5 +42,6 @@ router.route('/login').post( function(req, res) {
 router.use('/user', user)
 router.use('/threads', thread)
 router.use('/threads/:threadId/comments', comment)
+router.use('/friend', friend)
 
 module.exports = router
