@@ -40,14 +40,15 @@ describe('COMMENTS:', () => {
                     .end(() => {
                         Thread.findOne({ title: 'Test8' })
                             .then(thread => {
-                                console.log('COMMENT ID: ' + thread.comments[0]._id)
-                                console.log('CURRENT COMMENTS: ' + thread.comments.length)
                                 request(app)
                                     .delete('/api/threads/' + thread._id + '/comments/' + thread.comments[0]._id)
                                     .end((err, result) => {
-                                        console.log('CURRENT COMMENTS IN TEST: ' + thread.comments.length)
-                                        assert(thread.comments.length === 0)
-                                        done()
+                                        Thread.findOne({ title: 'Test8' })
+                                            .then(thread => {
+                                                assert(thread.comments.length === 0)
+                                                done()
+                                            })
+
                                     })
                             })
                     })

@@ -107,13 +107,11 @@ router.delete('/:id', (req, res) => {
         } else {
             const comment = thread.comments.id(req.params.id)
 
-            console.log('COMMENT TO REMOVE: ' + comment)
             thread.comments.remove(comment)
 
             thread.save()
                 .then((thread) => {
                     res.status(200).json(thread)
-                    console.log('CURRENT COMMENTS: ' + thread.comments.length)
                 })
                 .catch((err) => res.status(400).json(err))
         }
