@@ -162,23 +162,23 @@ it('GET to /api/threads/up gets all threads sorted descending by upvotes', done 
     })
 })
 
-// it('GET to /api/threads/diff gets all threads sorted bythe difference between upvotes and downvotes', done => {
-//     const user = new User({ username: 'Yannick', password: 'test123' })    
-//     const thread1 = new Thread({ title: 'Test13', content: 'Test14', user: user._id, totalUpvotes: 2, totalDownvotes: 1 })
-//     const thread2 = new Thread({ title: 'Test15', content: 'Test15', user: user._id , totalUpvotes: 3, totalDownvotes: 4 })
+it('GET to /api/threads/diff gets all threads sorted bythe difference between upvotes and downvotes', done => {
+    const user = new User({ username: 'Yannick', password: 'test123' })    
+    const thread1 = new Thread({ title: 'Test13', content: 'Test14', user: user._id, totalUpvotes: 2, totalDownvotes: 1 })
+    const thread2 = new Thread({ title: 'Test15', content: 'Test15', user: user._id , totalUpvotes: 3, totalDownvotes: 4 })
 
 
-//     user.save().then(() => {
-//         thread1.save().then(() => {
-//             thread2.save().then(() => {
-//                 request(app)
-//                     .get('/api/threads/diff')
-//                     .end((err, result) => {
-//                         console.log(result.body)
-//                         assert(true)
-//                         done()
-//                     })
-//             }) 
-//         })
-//     })
-// })
+    user.save().then(() => {
+        thread1.save().then(() => {
+            thread2.save().then(() => {
+                request(app)
+                    .get('/api/threads/diff')
+                    .end((err, result) => {
+                        assert((result.body[0].totalUpvotes - result.body[0].totalDownvotes) >=
+                         (result.body[1].totalUpvotes - result.body[1].totalDownvotes))
+                        done()
+                    })
+            }) 
+        })
+    })
+})

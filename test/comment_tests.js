@@ -56,4 +56,66 @@ describe('COMMENTS:', () => {
             })
         })
     })
+
+    it('PUT to /api/threads/:threadId/comments/:id/upvote upvotes a comment', done => {
+        const user = new User({ username: 'Yannick', password: 'test123' })
+        const comment = { content: "Upvote this!", user: user._id }
+        const thread = new Thread({ title: 'Test16', content: 'Test16', user: user._id })
+    
+        user.save().then(() => {
+            thread.save().then(() => {
+                request(app)
+                    .post('/api/threads/' + thread._id + '/comments')
+                    .send(comment)
+                    .end(() => {
+                        Thread.findOne({ title: 'Test16' })
+                            .then(thread => {
+                                request(app)
+                                    .put('/api/threads/' + thread._id + '/comments/' + thread.comments[0]._id + '/upvote')
+                                    .send({ user: user._id })
+                                    .end((err, result) => {
+                                        Thread.findOne({ title: 'Test16' })
+                                            .then(thread => {
+                                                assert(thread.comments[0].totalUpvotes === 1)
+                                                done()
+                                            })
+
+                                    })
+                            })
+                    })
+
+            })
+        })
+    })
+
+    it('PUT to /api/threads/:threadId/comments/:id/downvote downvotes a comment', done => {
+        const user = new User({ username: 'Yannick', password: 'test123' })
+        const comment = { content: "Downvote this!", user: user._id }
+        const thread = new Thread({ title: 'Test17', content: 'Test17', user: user._id })
+    
+        user.save().then(() => {
+            thread.save().then(() => {
+                request(app)
+                    .post('/api/threads/' + thread._id + '/comments')
+                    .send(comment)
+                    .end(() => {
+                        Thread.findOne({ title: 'Test17' })
+                            .then(thread => {
+                                request(app)
+                                    .put('/api/threads/' + thread._id + '/comments/' + thread.comments[0]._id + '/downvote')
+                                    .send({ user: user._id })
+                                    .end((err, result) => {
+                                        Thread.findOne({ title: 'Test17' })
+                                            .then(thread => {
+                                                assert(thread.comments[0].totalDownvotes === 1)
+                                                done()
+                                            })
+
+                                    })
+                            })
+                    })
+
+            })
+        })
+    })
 })
