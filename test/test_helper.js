@@ -18,13 +18,10 @@ before((done) => {
         })
 })
 
-// beforeEach((done) => {
-//     if (mongoose.connection.collections.any) {
-//         mongoose.connection.collections.threads.drop((err, doc) => {
-//             if (err) console.warn('beforeEach Thread Error:', err)
-//             mongoose.connection.collections.users.drop((err, doc) => {
-//                 done(err)
-//             })
-//         })
-//     }
-// })
+beforeEach((done) => {
+        mongoose.connection.collections.threads.drop((err, doc) => {
+            mongoose.connection.collections.users.drop((err, doc) => {
+                done(err)
+            })
+        })
+})

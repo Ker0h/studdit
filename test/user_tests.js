@@ -1,11 +1,11 @@
 const assert = require('assert')
 const request = require('supertest')
 const mongoose = require('mongoose')
-const User = mongoose.model('user')
+const User = require('../src/models/user')
 const app = require('../src/app')
 
 describe('USERS:', () => {
-    it('POST to /api/user saves a user', (done) => {
+    it('POST to /api/user saves a user', done => {
         User.count().then(count => {
             request(app)
                 .post('/api/user')
