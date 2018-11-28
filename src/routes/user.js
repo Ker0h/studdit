@@ -115,7 +115,13 @@ router.delete('/', (req, res) => {
 })
 
 router.get('/', (req, res) => {
-    res.status(200).json("werkt")
+    User.find({}, { __v: 0 }, (err, users) => {
+        if(err) {
+            const error = Error.notFound()
+            res.status(error.code).json(error)
+        }
+        res.status(200).json(users)
+    })
 })
 
 module.exports = router

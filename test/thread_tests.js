@@ -5,9 +5,15 @@ const User = require('../src/models/user')
 let user
 
 describe('Creating threads', () => {
-    before((done) => {
-        user = new User({ username: 'ker0h', password: 'test123' })
-        done()
+    beforeEach((done) => {
+        let user = new User({ username: 'Stijn', password: 'qwerty123' })
+            user.save()
+                .then(() => {
+                    assert(!user.isNew)
+                    done()
+                }).catch((err) => {
+                    done(err)
+                })
     })
 
     it('saves a thread', (done) => {
