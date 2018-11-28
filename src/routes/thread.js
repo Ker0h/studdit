@@ -34,33 +34,7 @@ router.post('/', (req, res) => {
 
 })
 
-/*
-* GET ALL THREADS
-*/
-router.get('/', (req, res) => {
-    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-        if (error) {
-            res.status(500).json(err)
-        } else {
-            res.status(200).json(threads)
-        }
-    })
-})
 
-/*
-* GET THREAD BY ID
-*/
-router.get('/:id', (req, res) => {
-    let id = req.params.id || ''
-
-    Thread.findById(id, { __v: 0 }, (error, thread) => {
-        if (!thread || error) {
-            const err = Errors.UnprocessableEntity()
-            res.status(err.code).json(err)
-        }
-        res.status(200).json(thread)
-    })
-})
 
 /*
 * UPDATE CONTENT
@@ -98,7 +72,6 @@ router.delete('/:id', (req, res) => {
 router.put('/:id/upvote', (req, res) => {
     let id = req.params.id || ''
     Thread.findById(id, (error, thread) => {
-        console.log(thread, error)
         if (!thread || error) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
@@ -107,7 +80,6 @@ router.put('/:id/upvote', (req, res) => {
             let user = req.body.user
 
             User.findById(user, function (error, userdoc) {
-                console.log(userdoc, error)
                 if (!userdoc || error) {
                     const err = Errors.UnprocessableEntity()
                     res.status(err.code).json(err)
@@ -123,6 +95,44 @@ router.put('/:id/upvote', (req, res) => {
                         thread.upvotes.push(user)
                         thread.totalUpvotes++
                     }
+                    thread.save().then(() => res.json(thread))
+                }
+            })
+        }
+    })
+})
+
+/*
+* DOWNVOTE THREAD
+*/
+
+router.put('/:id/downvote', (req, res) => {
+    let id = req.params.id || ''
+    Thread.findById(id, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        } else {
+
+            let user = req.body.user
+
+            User.findById(user, function (error, userdoc) {
+                if (!userdoc || error) {
+                    const err = Errors.UnprocessableEntity()
+                    res.status(err.code).json(err)
+                } else {
+
+                    if (thread.upvotes.indexOf(user) >= 0) {
+                        thread.upvotes.remove(user)
+                        thread.totalUpvotes--
+                    }
+
+                    if (thread.downvotes.indexOf(user) >= 0) {
+                        console.log('user already downvoted')
+                    } else {
+                        thread.downvotes.push(user)
+                        thread.totalDownvotes++
+                    }
 
                     thread.save()
                         .then(() => res.json(thread))
@@ -130,80 +140,71 @@ router.put('/:id/upvote', (req, res) => {
             })
         }
     })
+})
 
-    /*
-    * DOWNVOTE THREAD
-    */
+/*
+* SORT THREADS BY UPVOTES
+*/
+router.get('/up', (req, res) => {
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error){
+            res.status(500).json(err)
+        } else {
 
-    router.put('/:id/downvote', (req, res) => {
-        let id = req.params.id || ''
-        Thread.findById(id, (error, thread) => {
-            if (!thread || error) {
-                const err = Errors.UnprocessableEntity()
-                res.status(err.code).json(err)
-            } else {
-
-                let user = req.body.user
-
-                User.findById(user, function (error, userdoc) {
-                    if (!userdoc || error) {
-                        const err = Errors.UnprocessableEntity()
-                        res.status(err.code).json(err)
-                    } else {
-
-                        if (thread.upvotes.indexOf(user) >= 0) {
-                            thread.upvotes.remove(user)
-                            thread.totalUpvotes--
-                        }
-
-                        if (thread.downvotes.indexOf(user) >= 0) {
-                            console.log('user already downvoted')
-                        } else {
-                            thread.downvotes.push(user)
-                            thread.totalDownvotes++
-                        }
-
-                        thread.save()
-                            .then(() => res.json(thread))
-                    }
-                })
-            }
-        })
-    })
-
-    /*
-    * SORT THREADS BY UPVOTES
-    */
-    router.get('/up', (req, res) => {
-        Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-            if (error) {
-                res.status(500).json(err)
-            } else {
-
-                threads.sort(function (a, b) {
-                    return b.totalUpvotes - a.totalUpvotes
-                })
-                res.status(200).json(threads)
-            }
-        })
-    })
-
-    /*
-    * SORT THREADS BY DIFFERENCE IN UP/DOWNVOTES
-    */
-    router.get('/diff', (req, res) => {
-        Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-            if (error) {
-                res.status(500).json(err)
-            } else {
-
-                threads.sort(function (a, b) {
-                    return (b.totalUpvotes - b.totalDownvotes) - (a.totalUpvotes - a.totalDownvotes)
-                })
-                res.status(200).json(threads)
-            }
-        })
+            threads.sort(function(a, b){
+                return b.totalUpvotes - a.totalUpvotes
+            })
+            res.status(200).json(threads)
+        }
     })
 })
+
+
+/*
+* SORT THREADS BY DIFFERENCE IN UP/DOWNVOTES
+*/
+router.get('/diff', (req, res) => {
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error){
+            res.status(500).json(err)
+        } else {
+
+            threads.sort(function(a, b){
+                return (b.totalUpvotes- b.totalDownvotes) - (a.totalUpvotes - a.totalDownvotes)
+            })
+            res.status(200).json(threads)
+        }
+    })
+})
+
+/*
+* GET ALL THREADS
+*/
+router.get('/', (req, res) => {
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error) {
+            res.status(500).json(err)
+        } else {
+            res.status(200).json(threads)
+        }
+    })
+})
+
+/*
+* GET THREAD BY ID
+*/
+router.get('/:id', (req, res) => {
+    let id = req.params.id || ''
+
+    Thread.findById(id, { __v: 0 }, (error, thread) => {
+        if (!thread || error) {
+            const err = Errors.UnprocessableEntity()
+            res.status(err.code).json(err)
+        }
+        res.status(200).json(thread)
+    })
+})
+
+
 
 module.exports = router

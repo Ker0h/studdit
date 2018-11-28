@@ -154,7 +154,6 @@ it('GET to /api/threads/up gets all threads sorted descending by upvotes', done 
                 request(app)
                     .get('/api/threads/up')
                     .end((err, result) => {
-                        console.log(result)
                         assert(result.body[0].totalUpvotes >= result.body[1].totalUpvotes)
                         done()
                     })

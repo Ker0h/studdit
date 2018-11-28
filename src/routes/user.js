@@ -24,7 +24,6 @@ router.post('/', (req, res) => {
                     .run('CREATE (a:User {user: $user})', { 'user': user })
                     .then(function (result) {
                         result.records.forEach(function (record) {
-                            console.log(record)
                         });
                         session.close();
                     })
@@ -79,7 +78,6 @@ router.delete('/', (req, res) => {
     let password = req.body.password || ''
 
     User.findOne({ username: user }, function (error, userdoc) {
-        console.log(userdoc)
         if (!userdoc) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
@@ -94,9 +92,7 @@ router.delete('/', (req, res) => {
                         session
                             .run("MATCH (a:User { user : $user }) DELETE a", { 'user': user })
                             .then(function (result) {
-                                result.records.forEach(function (record) {
-                                    console.log(record)
-                                });
+                                result.records.forEach(function (record) {});
                                 session.close();
                             })
                             .catch(function (error) {

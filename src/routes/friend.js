@@ -29,9 +29,7 @@ router.post('/', (req, res) => {
                                 'MATCH (b:User {user: $user2}) ' +
                                 'MERGE (a)-[:IS_FIREND_WITH]-(b)', { 'user1': user1, 'user2': user2 })
                             .then(function (result) {
-                                result.records.forEach(function (record) {
-                                    console.log(record)
-                                });
+                                result.records.forEach(function (record) {});
                                 session.close();
                             })
                             .catch(function (error) {
@@ -68,11 +66,8 @@ router.delete('/', (req, res) => {
                                 +'MATCH (a)-[r]-(b) '
                                 +'DELETE r', { 'user1': user1, 'user2': user2 })
                             .then(function (result) {
-                                result.records.forEach(function (record) {
-                                    console.log(record)
-                                });
+                                result.records.forEach(function (record) {});
                                 session.close();
-                                console.log(result)
                             })
                             .catch(function (error) {
                                 console.log(error);
