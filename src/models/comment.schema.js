@@ -8,17 +8,9 @@ const CommentSchema = new Schema({
     thread: { type: ObjectId, ref: 'thread', required: true},
     upvotes: [{ type: ObjectId, ref: 'user', required: true}],
     downvotes: [{ type: ObjectId, ref: 'user', required: true}],
-    //totalUpvotes: { type: Number, default: 0 },
-    //totalDownvotes: { type: Number, default: 0 },
+    totalUpvotes: { type: Number, default: 0 },
+    totalDownvotes: { type: Number, default: 0 },
     comments: [this]
-})
-
-CommentSchema.virtual('upvoteTotal').get(function(){
-    return this.upvotes.length
-})
-
-CommentSchema.virtual('downvoteTotal').get(function(){
-    return this.downvotes.length
 })
 
 module.exports = CommentSchema

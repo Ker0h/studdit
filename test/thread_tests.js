@@ -48,7 +48,7 @@ it('PUT to /api/threads/:id edits the content of an existing thread', done => {
 
 it('DELETE to /api/threads/:id deletes an existing thread', done => {
     const user = new User({ username: 'Yannick', password: 'test123' })
-    const thread = new Thread({ title: 'Test3', content: 'Old stuff', user: user._id })
+    const thread = new Thread({ title: 'Test3', content: 'Thread3', user: user._id })
 
     user.save().then(() => {
         thread.save().then(() => {

@@ -100,19 +100,20 @@ router.post('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     let threadId = req.params.threadId || ''
 
-    Thread.findById(threadId, { __v: 0 }, (error, thread) => {
+    Thread.findById(threadId, (error, thread) => {
         if (!thread || error) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
         } else {
-
             const comment = thread.comments.id(req.params.id)
 
+            console.log('COMMENT TO REMOVE: ' + comment)
             thread.comments.remove(comment)
 
             thread.save()
                 .then((thread) => {
                     res.status(200).json(thread)
+                    console.log('CURRENT COMMENTS: ' + thread.comments.length)
                 })
                 .catch((err) => res.status(400).json(err))
         }
