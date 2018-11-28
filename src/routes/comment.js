@@ -156,7 +156,7 @@ router.put('/:id/upvote', (req, res) => {
 router.put('/:id/downvote', (req, res) => {
     let threadId = req.params.threadId || ''
 
-    Thread.findById(threadId, (err, thread) => {
+    Thread.findById(threadId, (error, thread) => {
         if (!thread || error) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
