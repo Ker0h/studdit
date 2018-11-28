@@ -39,43 +39,13 @@ router.post('/', (req, res) => {
 */
 router.get('/', (req, res) => {
     Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-        if (error){
+        if (error) {
             res.status(500).json(err)
         } else {
             res.status(200).json(threads)
         }
     })
 })
-
-router.get('/diff', (req, res) => {
-    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-        if (error){
-            res.status(500).json(err)
-        } else {
-
-            threads.sort(function(a, b){
-                return (b.totalUpvotes- b.totalDownvotes) - (a.totalUpvotes - a.totalDownvotes)
-            })
-            res.status(200).json(threads)
-        }
-    })
-})
-
-router.get('/up', (req, res) => {
-    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
-        if (error){
-            res.status(500).json(err)
-        } else {
-
-            threads.sort(function(a, b){
-                return b.totalUpvotes - a.totalUpvotes
-            })
-            res.status(200).json(threads)
-        }
-    })
-})
-
-
 
 /*
 * GET THREAD BY ID
@@ -197,6 +167,40 @@ router.put('/:id/upvote', (req, res) => {
                             .then(() => res.json(thread))
                     }
                 })
+            }
+        })
+    })
+
+    /*
+    * SORT THREADS BY UPVOTES
+    */
+    router.get('/up', (req, res) => {
+        Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+            if (error) {
+                res.status(500).json(err)
+            } else {
+
+                threads.sort(function (a, b) {
+                    return b.totalUpvotes - a.totalUpvotes
+                })
+                res.status(200).json(threads)
+            }
+        })
+    })
+
+    /*
+    * SORT THREADS BY DIFFERENCE IN UP/DOWNVOTES
+    */
+    router.get('/diff', (req, res) => {
+        Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+            if (error) {
+                res.status(500).json(err)
+            } else {
+
+                threads.sort(function (a, b) {
+                    return (b.totalUpvotes - b.totalDownvotes) - (a.totalUpvotes - a.totalDownvotes)
+                })
+                res.status(200).json(threads)
             }
         })
     })
