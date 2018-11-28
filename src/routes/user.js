@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
         })
         userdoc.save({username : user, password : password }, (err) => {
             if(!err){
-                res.status(200).json("user saved")
+                res.status(200).json("user saved: " + user.username )
             } else {
                 console.log(err)
                 res.status(400).json(err)

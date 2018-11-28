@@ -9,7 +9,7 @@ const Errors = require('./../errorHandling/errorcodes')
 router.post('/', (req, res) => {
     let title = req.body.title || ''
     let content = req.body.content || ''
-    let userId = '5bfd0bcc168e881e36f7dfad'
+    let userId = req.body.user || ''
 
     const thread = new Thread({
         title: title,
@@ -68,9 +68,52 @@ router.delete('/:id', (req, res) => {
 * UPVOTE THREAD
 */
 router.put('/:id/upvote', (req, res) => {
-    Thread.findByIdAndUpdate(req.params.id, { $push: { upvotes: req.body.user }, $inc: { totalUpvotes: 1 } }, { new: true }, (err, thread) => {
+    Thread.findById(req.params.id, (err, thread) => {
         if (err) res.status(500).json(err)
-        res.json(thread)
+
+        let user = req.body.user
+
+        if(thread.downvotes.indexOf(user) >= 0) {
+            thread.downvotes.remove(user)
+            thread.totalDownvotes--
+        }
+
+        if(thread.upvotes.indexOf(user) >= 0) {
+            console.log('User already upvoted')
+        }else{
+            thread.upvotes.push(user)
+            thread.totalUpvotes++
+        }
+
+        thread.save()
+            .then(() => res.json(thread))
+    })
+})
+
+/*
+* DOWNVOTE THREAD
+*/
+
+router.put('/:id/downvote', (req, res) => {
+    Thread.findById(req.params.id, (err, thread) => {
+        if (err) res.status(500).json(err)
+
+        let user = req.body.user
+
+        if(thread.upvotes.indexOf(user) >= 0) {
+            thread.upvotes.remove(user)
+            thread.totalUpvotes--
+        }
+
+        if(thread.downvotes.indexOf(user) >= 0) {
+            console.log('user already downvoted')
+        }else{
+            thread.downvotes.push(user)
+            thread.totalDownvotes++
+        }
+
+        thread.save()
+            .then(() => res.json(thread))
     })
 })
 
