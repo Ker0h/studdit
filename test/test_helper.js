@@ -7,7 +7,7 @@ before((done) => {
         mongoose.connect('mongodb+srv://ker0h:Qwerty_123@studdit-mongo-cgart.mongodb.net/test?retryWrites=true',
             { useNewUrlParser: true })
     } else {
-        mongoose.connect('mongodb://localhost/users_test')
+        mongoose.connect('mongodb://localhost/studdit_test')
     }
     mongoose.connection
         .once('open', () => {

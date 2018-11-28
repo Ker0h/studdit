@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
 
         const comment = {
             content: req.body.content,
-            user: '5bfd0bcc168e881e36f7dfad',
+            user: req.body.user,
             thread: req.params.threadId
         }
 
@@ -58,7 +58,7 @@ router.post('/:id', (req, res) => {
 
         const subComment = {
             content: req.body.content,
-            user: '5bfd0bcc168e881e36f7dfad',
+            user: req.body.user,
             thread: req.params.threadId
         }
 
@@ -95,9 +95,55 @@ router.delete('/:id', (req, res) => {
 * UPVOTE COMMENT
 */
 router.put('/:id/upvote', (req, res) => {
-    Thread.findByIdAndUpdate(req.params.id, { $push: { upvotes: req.body.user }, $inc: { totalUpvotes: 1 } }, { new: true }, (err, thread) => {
+    Thread.findById(req.params.threadId, (err, thread) => {
         if (err) res.status(500).json(err)
-        res.json(thread)
+
+        const comment = thread.comments.id(req.params.id)
+
+        let user = req.body.user
+
+        if(comment.downvotes.indexOf(user) >= 0) {
+            comment.downvotes.remove(user)
+            comment.totalDownvotes--
+        }
+
+        if(comment.upvotes.indexOf(user) >= 0) {
+            console.log('User already upvoted')
+        }else{
+            comment.upvotes.push(user)
+            comment.totalUpvotes++
+        }
+
+        thread.save()
+            .then(() => res.json(thread))
+    })
+})
+
+/*
+* DOWNVOTE THREAD
+*/
+router.put('/:id/downvote', (req, res) => {
+    Thread.findById(req.params.threadId, (err, thread) => {
+        if (err) res.status(500).json(err)
+
+        const comment = thread.comments.id(req.params.id)
+
+        let user = req.body.user
+
+        if(comment.upvotes.indexOf(user) >= 0) {
+            comment.upvotes.remove(user)
+            comment.totalUpvotes--
+        }
+
+        if(comment.downvotes.indexOf(user) >= 0) {
+            console.log('User already downvoted')
+        }else{
+            comment.downvotes.push(user)
+            comment.totalDownvotes++
+        }
+
+        thread.save()
+            .then(() => res.json(thread))
     })
 })
 
