@@ -95,6 +95,7 @@ router.delete('/:id', (req, res) => {
 router.put('/:id/upvote', (req, res) => {
     let id = req.params.id || ''
     Thread.findById(id, (error, thread) => {
+        console.log(thread, error)
         if (!thread || error) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
@@ -102,7 +103,8 @@ router.put('/:id/upvote', (req, res) => {
 
             let user = req.body.user
 
-            User.findOne({ username: user }, function (error, userdoc) {
+            User.findById(user, function (error, userdoc) {
+                console.log(userdoc, error)
                 if (!userdoc || error) {
                     const err = Errors.UnprocessableEntity()
                     res.status(err.code).json(err)
@@ -140,7 +142,7 @@ router.put('/:id/upvote', (req, res) => {
 
                 let user = req.body.user
 
-                User.findOne({ username: user }, function (error, userdoc) {
+                User.findById(user, function (error, userdoc) {
                     if (!userdoc || error) {
                         const err = Errors.UnprocessableEntity()
                         res.status(err.code).json(err)
