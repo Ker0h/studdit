@@ -38,11 +38,44 @@ router.post('/', (req, res) => {
 * GET ALL THREADS
 */
 router.get('/', (req, res) => {
-    Thread.find({}, { comments: 0, __v: 0 }, (err, threads) => {
-        if (err) res.status(500).json(err)
-        res.status(200).json(threads)
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error){
+            res.status(500).json(err)
+        } else {
+            res.status(200).json(threads)
+        }
     })
 })
+
+router.get('/diff', (req, res) => {
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error){
+            res.status(500).json(err)
+        } else {
+
+            threads.sort(function(a, b){
+                return (b.totalUpvotes- b.totalDownvotes) - (a.totalUpvotes - a.totalDownvotes)
+            })
+            res.status(200).json(threads)
+        }
+    })
+})
+
+router.get('/up', (req, res) => {
+    Thread.find({}, { comments: 0, __v: 0 }, (error, threads) => {
+        if (error){
+            res.status(500).json(err)
+        } else {
+
+            threads.sort(function(a, b){
+                return b.totalUpvotes - a.totalUpvotes
+            })
+            res.status(200).json(threads)
+        }
+    })
+})
+
+
 
 /*
 * GET THREAD BY ID
