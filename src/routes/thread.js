@@ -98,31 +98,32 @@ router.put('/:id/upvote', (req, res) => {
         if (!thread || error) {
             const err = Errors.UnprocessableEntity()
             res.status(err.code).json(err)
-        }
+        } else {
 
-        let user = req.body.user
+            let user = req.body.user
 
-        User.findOne({ username: user }, function (error, userdoc) {
-            if (!userdoc || error) {
-                const err = Errors.UnprocessableEntity()
-                res.status(err.code).json(err)
-            } else {
-                if (thread.downvotes.indexOf(user) >= 0) {
-                    thread.downvotes.remove(user)
-                    thread.totalDownvotes--
-                }
-
-                if (thread.upvotes.indexOf(user) >= 0) {
-                    console.log('User already upvoted')
+            User.findOne({ username: user }, function (error, userdoc) {
+                if (!userdoc || error) {
+                    const err = Errors.UnprocessableEntity()
+                    res.status(err.code).json(err)
                 } else {
-                    thread.upvotes.push(user)
-                    thread.totalUpvotes++
-                }
+                    if (thread.downvotes.indexOf(user) >= 0) {
+                        thread.downvotes.remove(user)
+                        thread.totalDownvotes--
+                    }
 
-                thread.save()
-                    .then(() => res.json(thread))
-            }
-        })
+                    if (thread.upvotes.indexOf(user) >= 0) {
+                        console.log('User already upvoted')
+                    } else {
+                        thread.upvotes.push(user)
+                        thread.totalUpvotes++
+                    }
+
+                    thread.save()
+                        .then(() => res.json(thread))
+                }
+            })
+        }
     })
 
     /*
@@ -135,32 +136,33 @@ router.put('/:id/upvote', (req, res) => {
             if (!thread || error) {
                 const err = Errors.UnprocessableEntity()
                 res.status(err.code).json(err)
-            }
+            } else {
 
-            let user = req.body.user
+                let user = req.body.user
 
-            User.findOne({ username: user }, function (error, userdoc) {
-                if (!userdoc || error) {
-                    const err = Errors.UnprocessableEntity()
-                    res.status(err.code).json(err)
-                } else {
-
-                    if (thread.upvotes.indexOf(user) >= 0) {
-                        thread.upvotes.remove(user)
-                        thread.totalUpvotes--
-                    }
-
-                    if (thread.downvotes.indexOf(user) >= 0) {
-                        console.log('user already downvoted')
+                User.findOne({ username: user }, function (error, userdoc) {
+                    if (!userdoc || error) {
+                        const err = Errors.UnprocessableEntity()
+                        res.status(err.code).json(err)
                     } else {
-                        thread.downvotes.push(user)
-                        thread.totalDownvotes++
-                    }
 
-                    thread.save()
-                        .then(() => res.json(thread))
-                }
-            })
+                        if (thread.upvotes.indexOf(user) >= 0) {
+                            thread.upvotes.remove(user)
+                            thread.totalUpvotes--
+                        }
+
+                        if (thread.downvotes.indexOf(user) >= 0) {
+                            console.log('user already downvoted')
+                        } else {
+                            thread.downvotes.push(user)
+                            thread.totalDownvotes++
+                        }
+
+                        thread.save()
+                            .then(() => res.json(thread))
+                    }
+                })
+            }
         })
     })
 })
