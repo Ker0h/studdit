@@ -110,7 +110,7 @@ router.delete('/', (req, res) => {
 })
 
 
-router.get('/', (req, res) => {
+router.get('/', {_id: 1, username: 1, password: 0 }, (req, res) => {
     User.find({}, { __v: 0 }, (err, users) => {
         if(err) {
             const error = Error.notFound()
