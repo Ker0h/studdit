@@ -111,7 +111,7 @@ router.delete('/', (req, res) => {
 
 
 router.get('/', (req, res) => {
-    User.find({}, { id: 1, username: 1, password: 0, __v: 0 }, (err, users) => {
+    User.find({}, { __v: 0 }, (err, users) => {
         if(err) {
             const error = Error.notFound()
             res.status(error.code).json(error)
