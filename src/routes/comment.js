@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router({ mergeParams: true })
 const Thread = require('./../models/thread')
-const Comment = require('../models/comment.schema')
 const Errors = require('./../errorHandling/errorcodes')
 
 /*
@@ -67,7 +66,7 @@ router.get('/:id', (req, res) => {
 /*
 * ADD COMMENT TO ANOTHER COMMENT (UPDATE COMMENT)
 */
-router.post('/:id', (req, res) => {
+router.post('/:id/comments', (req, res) => {
     let threadId = req.params.threadId || ''
 
     Thread.findById(threadId, { __v: 0 }, (error, thread) => {

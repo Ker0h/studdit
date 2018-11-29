@@ -19,9 +19,9 @@ before((done) => {
 })
 
 beforeEach((done) => {
-        mongoose.connection.collections.threads.drop((err, doc) => {
-            mongoose.connection.collections.users.drop((err, doc) => {
-                done(err)
+        mongoose.connection.collections.threads.drop(() => {
+            mongoose.connection.collections.users.drop(() => {
+                done()
             })
         })
 })

@@ -118,4 +118,35 @@ describe('COMMENTS:', () => {
             })
         })
     })
+
+    it('POST to /api/threads/:threadId/comments/:id/comments comments on a comment', done => {
+        const user = new User({ username: 'Yannick', password: 'test123' })
+        const comment = { content: "Downvote this!", user: user._id }
+        const thread = new Thread({ title: 'Test18', content: 'Test18', user: user._id })
+    
+        user.save().then(() => {
+            thread.save().then(() => {
+                request(app)
+                    .post('/api/threads/' + thread._id + '/comments')
+                    .send(comment)
+                    .end(() => {
+                        Thread.findOne({ title: 'Test18' })
+                            .then(thread => {
+                                request(app)
+                                    .post('/api/threads/' + thread._id + '/comments/' + thread.comments[0]._id + '/comments')
+                                    .send({ user: user._id, content: 'Cool comment!' })
+                                    .end((err, result) => {
+                                        Thread.findOne({ title: 'Test18' })
+                                            .then(thread => {
+                                                assert(thread.comments[0].comments[0].content === 'Cool comment!')
+                                                done()
+                                            })
+
+                                    })
+                            })
+                    })
+
+            })
+        })
+    })
 })
